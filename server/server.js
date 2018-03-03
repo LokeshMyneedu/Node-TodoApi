@@ -10,6 +10,8 @@ var app = express();
 const port = process.env.PORT||3000;
 
 app.use(bodyParser.json());
+
+//post
 app.post('/todos',(req,res)=>{
 console.log(req.body);
 var todo = new Todo({
@@ -22,6 +24,7 @@ todo.save().then((doc)=>{
 })
 });
 
+//full get
 app.get('/todos',(req,res)=>{
     Todo.find().then((todos)=>{
         res.send({todos});    
@@ -30,6 +33,7 @@ app.get('/todos',(req,res)=>{
     });
     });
 
+//get by id    
     app.get('/todos/:id',(req,res)=>{
         let id = req.params.id;
        if(!ObjectID.isValid(id)){
@@ -41,7 +45,22 @@ app.get('/todos',(req,res)=>{
            }
            res.send({result});
        }).catch(e=> res.status(400).send()); 
-        });  
+        }); 
+
+//delete by id
+
+    app.delete('/todos/:id',(req,res)=>{
+    let id = req.params.id;
+    if(!ObjectID.isValid(id)){
+        return res.status(404).send();
+    }
+    Todo.findByIdAndRemove(id).then((result)=>{
+        if(!result){
+            return res.status(404).send('Data Not found')
+        }
+        res.send({result});
+    }).catch(e=> res.status(400).send()); 
+     }); 
 app.listen(port,()=>{
     console.log(`started on port ${port}`);
 });

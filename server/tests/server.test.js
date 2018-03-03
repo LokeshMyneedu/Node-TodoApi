@@ -87,3 +87,28 @@ describe('Get/todos/id',()=>{
             .end(done);
             })    
 })
+
+describe('Get/todos/id',()=>{
+    it('should remove doc by passing valid id',(done)=>{
+    request(app)
+    .get(`/todos/${todos[0]._id.toHexString()}`)
+    .expect(200)
+     .expect((res)=>{
+        expect(res.body.result.text).toBe(todos[0].text);
+     })
+    .end(done);
+    }),
+    it('should return 404 by passing newly created id',(done)=>{
+        var hexId =new ObjectID().toHexString();
+        request(app)
+        .get(`/todos/${hexId}`)
+        .expect(404)         
+        .end(done);
+        }),
+    it('should return 400 by passing corrupted id',(done)=>{
+            request(app)
+            .get(`/todos/123`)
+            .expect(404)         
+            .end(done);
+            })    
+})

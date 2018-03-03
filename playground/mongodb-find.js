@@ -1,7 +1,7 @@
 const {MongoClient,ObjectID} = require('mongodb');
 
 
-MongoClient.connect('mongodb://localhost:27017/TodoApp',(err,db)=>{
+MongoClient.connect('mongodb://localhost:27017/TodoApp',(err,db)=>{ //will create databse todoapp but only visib;le when we insert first dat
  if(err){
     return console.log('unable to connect to MongoDB server');
  }

@@ -9,8 +9,10 @@ const todos =[{
     _id: new ObjectID(),
      text:'first test'
 },{
-    _id: new ObjectID()
-,    text:'second test'
+    _id: new ObjectID(),
+    text:'second test',
+     completed:true,
+     completedAt:333
 }]
 
 beforeEach((done)=>{
@@ -88,10 +90,10 @@ describe('Get/todos/id',()=>{
             })    
 })
 
-describe('Get/todos/id',()=>{
+describe('Delete/todos/id',()=>{
     it('should remove doc by passing valid id',(done)=>{
     request(app)
-    .get(`/todos/${todos[0]._id.toHexString()}`)
+    .delete(`/todos/${todos[0]._id.toHexString()}`)
     .expect(200)
      .expect((res)=>{
         expect(res.body.result.text).toBe(todos[0].text);
@@ -101,13 +103,56 @@ describe('Get/todos/id',()=>{
     it('should return 404 by passing newly created id',(done)=>{
         var hexId =new ObjectID().toHexString();
         request(app)
-        .get(`/todos/${hexId}`)
+        .delete(`/todos/${hexId}`)
         .expect(404)         
         .end(done);
         }),
     it('should return 400 by passing corrupted id',(done)=>{
             request(app)
-            .get(`/todos/123`)
+            .delete(`/todos/123`)
+            .expect(404)         
+            .end(done);
+            })    
+})
+
+describe('patch/todos/id',()=>{
+    it('should update the todo',(done)=>{
+    request(app)
+    .patch(`/todos/${todos[0]._id.toHexString()}`)
+    .send({
+        completed:true
+    })
+    .expect(200)
+     .expect((res)=>{
+        expect(res.body.result.completed).toBe(true),
+        expect(res.body.result.completedAt).toBeA('number');
+     })
+    .end(done);
+    }),
+    it('should update the todo completedat to null by making completed false',(done)=>{
+        request(app)
+        .patch(`/todos/${todos[0]._id.toHexString()}`)
+        .send({
+            completed:false
+        })
+        .expect(200)
+         .expect((res)=>{
+            expect(res.body.result.completedAt).toBe(null),
+            expect(res.body.result.completed).toBe(false)
+
+         })
+        .end(done);
+        }),
+    it('should return 404 by passing newly created id',(done)=>{
+        var hexId =new ObjectID().toHexString();
+        request(app)
+        .patch(`/todos/${hexId}`)
+        .expect(404)         
+        .end(done);
+        }),
+    it('should return 400 by passing corrupted id',(done)=>{
+            request(app)
+            .patch(`/todos/123`)
             .expect(404)         
             .end(done);
             })    

@@ -32,13 +32,31 @@ var userSchema = new mongoose.Schema({
     }]    
 });
 
-userSchema.methods.toJSON = function(){
+userSchema.methods.toJSON = function(){ //create methods in instance
     let user = this;
     let userObject = user.toObject();
 
     return _.pick(userObject,['_id','email']);
-}
+};
 
+                             //create method at model level
+userSchema.statics.findByToken = function(token){
+        let User = this;
+        let decoded;
+        try{
+             decoded = jwt.verify(token,'abc123');
+        }catch(e){
+        //   return new Promise( (resolve,reject)=>{
+        //      reject();
+        //   });
+        return Promise.reject();
+        }
+        return User.findOne({
+           _id : decoded._id,
+           'tokens.token':token,
+           'tokens.access':'auth'
+        });
+}
 userSchema.methods.generateAuthToken = function(){
     let user = this;
     let access='auth';

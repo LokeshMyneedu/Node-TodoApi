@@ -1,12 +1,14 @@
 require('./config/config');
-var express = require('express');
-var bodyParser = require('body-parser');
+let express = require('express');
+let bodyParser = require('body-parser');
 const{ObjectID}= require('mongodb');
 const _ = require('lodash');
 
-var {mongoose}=require('./db/mongoose');
-var {Todo}= require('./models/todo');
-var {User}= require('./models/user');
+let {mongoose}=require('./db/mongoose');
+let {Todo}= require('./models/todo');
+let {User}= require('./models/user');
+let {authenticate}= require('./middleware/authenticate');
+
 
 var app = express();
 const port = process.env.PORT;
@@ -99,6 +101,11 @@ app.post('/user',(req,res)=>{
     })
     });
 
+//get user
+
+app.get('/user/me',authenticate,(req,res)=>{
+   res.send(req.user);
+});
 
 module.exports ={
     app};

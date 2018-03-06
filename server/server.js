@@ -88,6 +88,7 @@ app.patch('/todos/:id',(req,res)=>{
 })
 
 //users post
+//sign up 
 app.post('/user',(req,res)=>{
     let body = _.pick(req.body,['email','password']);
     let user = new User(body);
@@ -105,6 +106,7 @@ app.get('/user/me',authenticate,(req,res)=>{
 });
 
 //post /users/login
+//sign in
 app.post('/user/login',(req,res)=>{
     var body =_.pick(req.body,['email','password']);
     User.findByCredentials(body.email,body.password).then((user)=>{
@@ -115,6 +117,14 @@ app.post('/user/login',(req,res)=>{
     res.status(400).send();
     });
 
+})
+
+//users/logout
+
+app.delete('/user/me/token',authenticate,(req,res)=>{
+    req.user.removeToken(req.token).then(()=>{
+        res.status(200).send();
+    }).catch((e)=>req.status(401).send());
 })
 
 

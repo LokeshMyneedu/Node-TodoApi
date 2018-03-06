@@ -96,6 +96,17 @@ userSchema.methods.generateAuthToken = function(){
     })
 }
 
+userSchema.methods.removeToken= function(token){
+    let user= this;
+        return user.update({
+        $pull:{
+           tokens:{
+               token
+           } 
+        }
+    });   
+};
+
 userSchema.pre('save',function(next){
 let user = this;
 if(user.isModified('password')){

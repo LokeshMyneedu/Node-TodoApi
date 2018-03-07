@@ -6,12 +6,14 @@ const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
 const todos =[{
     _id:new ObjectID(),
-     text:'first test'
+     text:'first test',
+     _creator:userOneId
 },{
     _id: new ObjectID(),
     text:'second test',
      completed:true,
-     completedAt:333
+     completedAt:333,
+     _creator:userTwoId
 }];
 
 const users =[{
@@ -22,12 +24,18 @@ tokens:[{
     access:'auth',
     token:jwt.sign({
         _id:userOneId,access:'auth'
-       },'abc123').toString()
+       },process.env.JWT_SECRET).toString()
 }]
 },{
     _id:userTwoId,
     email:'test1@test.com',
     password:'userOnePass',
+    tokens:[{
+        access:'auth',
+        token:jwt.sign({
+            _id:userTwoId,access:'auth'
+           },process.env.JWT_SECRET).toString()
+    }]
 }]
 
 
